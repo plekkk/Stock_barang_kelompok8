@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockPredict - Sistem Prediksi Stok Gudang</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+    <section id="caraPakaiPage" class="intro-page">
+        <div class="intro-card">
+
+            <div class="intro-icon">📦</div>
+
+            <p class="label">STOCKPREDICT</p>
+            <h1>Sistem Prediksi Stok Gudang</h1>
+
+            <p class="intro-text">
+                Aplikasi untuk membantu mengelola stok barang dan memperkirakan
+                stok pada periode berikutnya menggunakan perhitungan stok berulang.
+            </p>
+
+            <div class="steps">
+
+                <div class="step">
+                    <span>1</span>
+                    <div>
+                        <strong>Pilih jenis usaha</strong>
+                        <p>Tentukan tempat penggunaan aplikasi.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span>2</span>
+                    <div>
+                        <strong>Isi data gudang</strong>
+                        <p>Masukkan nama dan informasi gudang.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span>3</span>
+                    <div>
+                        <strong>Masukkan stok barang</strong>
+                        <p>Isi stok sekarang dan satuannya.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span>4</span>
+                    <div>
+                        <strong>Isi barang terpakai dan masuk</strong>
+                        <p>Masukkan perkiraan barang yang terpakai atau terjual dan barang yang masuk.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span>5</span>
+                    <div>
+                        <strong>Hitung prediksi</strong>
+                        <p>Sistem menghitung stok pada setiap periode.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="formula-box">
+                <span>Rumus yang digunakan</span>
+                <strong>Sₙ = Sₙ₋₁ − Pₙ + Mₙ</strong>
+                <small>
+                    Stok berikutnya = stok sebelumnya − barang terpakai + barang masuk
+                </small>
+            </div>
+
+            <button class="primary-btn large-btn" onclick="mulaiAplikasi()">
+                Mulai Menggunakan Aplikasi →
+            </button>
+
+        </div>
+    </section>
+
+
+    <section id="setupPage" class="setup-page hidden">
+
+        <div class="setup-card">
+
+            <div class="setup-header">
+                <div class="setup-icon">🏢</div>
+                <p class="label">LANGKAH 1</p>
+                <h1>Pilih Tempat Penggunaan</h1>
+                <p>
+                    Pilih jenis usaha atau gudang yang akan menggunakan aplikasi.
+                </p>
+            </div>
+
+            <div id="businessOptions" class="business-options">
+
+                <button class="business-option" data-business="Restoran / Kafe">
+                    <span>🍽️</span>
+                    <strong>Restoran / Kafe</strong>
+                    <small>Makanan, minuman, bahan dapur</small>
+                </button>
+
+                <button class="business-option" data-business="Toko Elektronik">
+                    <span>💻</span>
+                    <strong>Toko Elektronik</strong>
+                    <small>Laptop, komputer, kabel, aksesoris</small>
+                </button>
+
+                <button class="business-option" data-business="Toko Sepatu">
+                    <span>👟</span>
+                    <strong>Toko Sepatu</strong>
+                    <small>Sepatu, sandal, kaos kaki</small>
+                </button>
+
+                <button class="business-option" data-business="Toko Pakaian">
+                    <span>👕</span>
+                    <strong>Toko Pakaian</strong>
+                    <small>Kaos, celana, jaket, kemeja</small>
+                </button>
+
+                <button class="business-option" data-business="Minimarket / Sembako">
+                    <span>🛒</span>
+                    <strong>Minimarket / Sembako</strong>
+                    <small>Makanan, minuman, kebutuhan sehari-hari</small>
+                </button>
+
+                <button class="business-option" data-business="Apotek">
+                    <span>💊</span>
+                    <strong>Apotek</strong>
+                    <small>Obat, vitamin, masker, perlengkapan</small>
+                </button>
+
+                <button class="business-option" data-business="Gudang Umum">
+                    <span>🏭</span>
+                    <strong>Gudang Umum</strong>
+                    <small>Berbagai jenis barang</small>
+                </button>
+
+                <button class="business-option" data-business="Lainnya">
+                    <span>📦</span>
+                    <strong>Lainnya</strong>
+                    <small>Jenis usaha atau gudang lainnya</small>
+                </button>
+
+            </div>
+
+            <div class="setup-actions">
+                <button class="secondary-btn" onclick="kembaliKeCaraPakai()">
+                    ← Kembali
+                </button>
+
+                <button id="lanjutSetupBtn" class="primary-btn" onclick="lanjutKeGudang()" disabled>
+                    Lanjut →
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section id="gudangPage" class="setup-page hidden">
+
+        <div class="setup-card small-card">
+
+            <div class="setup-header">
+                <div class="setup-icon">🏭</div>
+                <p class="label">LANGKAH 2</p>
+                <h1>Data Gudang</h1>
+                <p>Masukkan informasi gudang yang akan digunakan.</p>
+            </div>
+
+            <form id="gudangForm">
+
+                <div class="form-group">
+                    <label>Nama Gudang</label>
+                    <input
+                        type="text"
+                        id="namaGudang"
+                        placeholder="Contoh: Gudang Utama"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Lokasi Gudang</label>
+                    <input
+                        type="text"
+                        id="lokasiGudang"
+                        placeholder="Contoh: Medan"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Nama Pengelola</label>
+                    <input
+                        type="text"
+                        id="pengelolaGudang"
+                        placeholder="Contoh: Rafli"
+                        required
+                    >
+                </div>
+
+                <div class="selected-business">
+                    <span>Jenis usaha</span>
+                    <strong id="selectedBusinessText">-</strong>
+                </div>
+
+                <div class="setup-actions">
+                    <button type="button" class="secondary-btn" onclick="kembaliKeUsaha()">
+                        ← Kembali
+                    </button>
+
+                    <button type="submit" class="primary-btn">
+                        Masuk ke Aplikasi →
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <div id="mainApp" class="main-app hidden">
+
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-icon">📦</div>
+                <div>
+                    <strong>StockPredict</strong>
+                    <small>Prediksi Stok</small>
+                </div>
+            </div>
+
+            <div class="business-badge">
+                <span>🏢</span>
+                <div>
+                    <small>Digunakan untuk</small>
+                    <strong id="sidebarBusiness">-</strong>
+                </div>
+            </div>
+
+            <nav>
+
+                <button class="nav-btn active" data-page="dashboard">
+                    🏠
+                    <span>Beranda</span>
+                </button>
+
+                <button class="nav-btn" data-page="stok">
+                    📦
+                    <span>Stok Gudang</span>
+                </button>
+
+                <button class="nav-btn" data-page="hitung">
+                    🧮
+                    <span>Hitung Prediksi</span>
+                </button>
+
+                <button class="nav-btn" data-page="riwayat">
+                    🕘
+                    <span>Riwayat</span>
+                </button>
+
+                <button class="nav-btn" data-page="cara">
+                    📖
+                    <span>Cara Pakai</span>
+                </button>
+
+                <button class="nav-btn" data-page="data">
+                    💾
+                    <span>Simpan Data</span>
+                </button>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+                <small>Data tersimpan di perangkat</small>
+                <strong>LocalStorage</strong>
+            </div>
+
+        </aside>
+
+
+        <main class="content">
+
+            <header class="topbar">
+                <button id="mobileMenuBtn">☰</button>
+
+                <div>
+                    <strong id="topbarGudang">Gudang</strong>
+                    <small id="topbarLokasi">Lokasi</small>
+                </div>
+            </header>
+
+
+            <section id="page-dashboard" class="app-page active">
+
+                <div class="page-title">
+                    <div>
+                        <p class="label">BERANDA</p>
+                        <h1>Dashboard Gudang</h1>
+                        <p>
+                            Pantau stok dan lihat kondisi persediaan barang.
+                        </p>
+                    </div>
+
+                    <button class="primary-btn" onclick="bukaHalaman('hitung')">
+                        + Hitung Prediksi
+                    </button>
+                </div>
+
+                <div class="info-banner">
+                    <div>📊</div>
+                    <div>
+                        <strong id="dashboardBusiness">-</strong>
+                        <p id="dashboardGudang">-</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+                        <span>📦</span>
+                        <small>Total Barang</small>
+                        <strong id="totalBarang">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>⚠️</span>
+                        <small>Perlu Restock</small>
+                        <strong id="perluRestock">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>🧮</span>
+                        <small>Total Perhitungan</small>
+                        <strong id="totalPerhitungan">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>🕘</span>
+                        <small>Terakhir Diperbarui</small>
+                        <strong id="terakhirUpdate">-</strong>
+                    </div>
+
+                </div>
+
+                <div class="dashboard-grid">
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <p class="label">STOK TERBARU</p>
+                                <h2>Daftar Barang</h2>
+                            </div>
+
+                            <button class="text-btn" onclick="bukaHalaman('stok')">
+                                Lihat Semua →
+                            </button>
+                        </div>
+
+                        <div id="dashboardStockList" class="stock-list">
+                        </div>
+                    </div>
+
+                    <div class="panel formula-panel">
+
+                        <p class="label">ALGORITMA</p>
+                        <h2>Perhitungan Stok</h2>
+
+                        <div class="formula">
+                            Sₙ = Sₙ₋₁ − Pₙ + Mₙ
+                        </div>
+
+                        <div class="formula-info">
+                            <div>
+                                <strong>Sₙ</strong>
+                                <span>Stok berikutnya</span>
+                            </div>
+
+                            <div>
+                                <strong>Sₙ₋₁</strong>
+                                <span>Stok sebelumnya</span>
+                            </div>
+
+                            <div>
+                                <strong>Pₙ</strong>
+                                <span>Terpakai / terjual</span>
+                            </div>
+
+                            <div>
+                                <strong>Mₙ</strong>
+                                <span>Barang masuk</span>
+                            </div>
+                        </div>
+
+                        <p class="formula-desc">
+                            Hasil dari satu periode menjadi stok awal untuk
+                            periode berikutnya.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section id="page-stok" class="app-page">
+
+                <div class="page-title">
+                    <div>
+                        <p class="label">DATA GUDANG</p>
+                        <h1>Stok Barang Gudang</h1>
+                        <p>Kelola seluruh barang yang ada di gudang.</p>
+                    </div>
+
+                    <button class="primary-btn" onclick="bukaHalaman('hitung')">
+                        + Tambah Barang
+                    </button>
+                </div>
+
+                <div class="panel">
+
+                    <div class="table-tools">
+
+                        <input
+                            type="text"
+                            id="searchStock"
+                            placeholder="🔍 Cari nama barang..."
+                        >
+
+                        <select id="filterStatus">
+                            <option value="semua">Semua Status</option>
+                            <option value="aman">Aman</option>
+                            <option value="restock">Perlu Restock</option>
+                        </select>
+
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Barang</th>
+                                    <th>Stok</th>
+                                    <th>Satuan</th>
+                                    <th>Terpakai</th>
+                                    <th>Barang Masuk</th>
+                                    <th>Batas Minimum</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="stockTableBody">
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section id="page-hitung" class="app-page">
+
+                <div class="page-title">
+                    <div>
+                        <p class="label">PERHITUNGAN</p>
+                        <h1>Hitung Prediksi Stok</h1>
+                        <p>
+                            Masukkan data barang untuk melihat perubahan stok
+                            pada beberapa periode.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="calculation-grid">
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <div>
+                                <p class="label">DATA BARANG</p>
+                                <h2>Informasi Stok</h2>
+                            </div>
+                        </div>
+
+                        <form id="stockForm">
+
+                            <div class="form-group">
+                                <label>Nama Barang</label>
+                                <input
+                                    type="text"
+                                    id="namaBarang"
+                                    placeholder="Contoh: Beras / Laptop / Sepatu"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-row">
+
+                                <div class="form-group">
+                                    <label>Stok Sekarang</label>
+                                    <input
+                                        type="number"
+                                        id="stokSekarang"
+                                        min="0"
+                                        placeholder="100"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Satuan</label>
+
+                                    <select id="satuan">
+                                        <option value="pcs">pcs</option>
+                                        <option value="unit">unit</option>
+                                        <option value="kg">kg</option>
+                                        <option value="gram">gram</option>
+                                        <option value="liter">liter</option>
+                                        <option value="botol">botol</option>
+                                        <option value="dus">dus</option>
+                                        <option value="box">box</option>
+                                        <option value="pasang">pasang</option>
+                                        <option value="meter">meter</option>
+                                        <option value="lainnya">lainnya</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div class="form-row">
+
+                                <div class="form-group">
+                                    <label>Terpakai / Terjual per Periode</label>
+                                    <input
+                                        type="number"
+                                        id="barangTerpakai"
+                                        min="0"
+                                        placeholder="10"
+                                        required
+                                    >
+                                    <small>
+                                        Jumlah yang diperkirakan berkurang setiap periode.
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Barang Masuk per Periode</label>
+                                    <input
+                                        type="number"
+                                        id="barangMasuk"
+                                        min="0"
+                                        placeholder="5"
+                                        required
+                                    >
+                                    <small>
+                                        Jumlah barang yang diperkirakan masuk setiap periode.
+                                    </small>
+                                </div>
+
+                            </div>
+
+                            <div class="form-row">
+
+                                <div class="form-group">
+                                    <label>Mau Lihat Berapa Periode?</label>
+                                    <input
+                                        type="number"
+                                        id="jumlahPeriode"
+                                        min="1"
+                                        max="365"
+                                        placeholder="7"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Batas Minimum Stok</label>
+                                    <input
+                                        type="number"
+                                        id="batasMinimum"
+                                        min="0"
+                                        placeholder="20"
+                                        required
+                                    >
+                                    <small>
+                                        Sistem memberi peringatan jika stok berada di bawah batas ini.
+                                    </small>
+                                </div>
+
+                            </div>
+
+                            <button type="submit" class="primary-btn full-btn">
+                                🧮 Hitung Prediksi Stok
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <div class="panel explanation-panel">
+
+                        <p class="label">CARA KERJA</p>
+                        <h2>Stok dihitung secara berurutan</h2>
+
+                        <div class="example-flow">
+
+                            <div>
+                                <span>Stok Sekarang</span>
+                                <strong>S₀</strong>
+                            </div>
+
+                            <div class="operator">−</div>
+
+                            <div>
+                                <span>Terpakai</span>
+                                <strong>Pₙ</strong>
+                            </div>
+
+                            <div class="operator">+</div>
+
+                            <div>
+                                <span>Barang Masuk</span>
+                                <strong>Mₙ</strong>
+                            </div>
+
+                            <div class="operator">=</div>
+
+                            <div class="result-flow">
+                                <span>Stok Berikutnya</span>
+                                <strong>Sₙ</strong>
+                            </div>
+
+                        </div>
+
+                        <p>
+                            Stok yang diperoleh pada periode sebelumnya akan
+                            digunakan sebagai stok awal untuk menghitung periode
+                            berikutnya.
+                        </p>
+
+                        <div class="example-box">
+                            <strong>Contoh:</strong>
+
+                            <p>
+                                Stok sekarang 100 pcs, terjual 10 pcs dan barang
+                                masuk 5 pcs.
+                            </p>
+
+                            <code>
+                                100 − 10 + 5 = 95 pcs
+                            </code>
+
+                            <p>
+                                Pada periode berikutnya, angka 95 menjadi stok awal.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div id="resultPanel" class="panel result-panel hidden">
+
+                    <div class="result-header">
+                        <div>
+                            <p class="label">HASIL PREDIKSI</p>
+                            <h2 id="resultTitle">-</h2>
+                        </div>
+
+                        <button class="secondary-btn" onclick="simpanHasil()">
+                            💾 Simpan Hasil
+                        </button>
+                    </div>
+
+                    <div id="resultSummary" class="result-summary">
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Periode</th>
+                                    <th>Stok Awal</th>
+                                    <th>Terpakai / Terjual</th>
+                                    <th>Barang Masuk</th>
+                                    <th>Stok Akhir</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="resultTableBody">
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section id="page-riwayat" class="app-page">
+
+                <div class="page-title">
+                    <div>
+                        <p class="label">CATATAN</p>
+                        <h1>Riwayat Perhitungan</h1>
+                        <p>Daftar hasil prediksi yang pernah disimpan.</p>
+                    </div>
+                </div>
+
+                <div id="historyContainer" class="history-grid">
+                </div>
+
+            </section>
+
+
+            <section id="page-cara" class="app-page">
+
+                <div class="page-title">
+                    <div>
+                        <p class="label">PANDUAN</p>
+                        <h1>Cara Menggunakan Aplikasi</h1>
+                        <p>Panduan lengkap penggunaan StockPredict.</p>
+                    </div>
+                </div>
+
+                <div class="guide-grid">
+
+                    <div class="guide-card">
+                        <span>01</span>
+                        <h3>Pilih Jenis Usaha</h3>
+                        <p>
+                            Tentukan apakah aplikasi digunakan untuk restoran,
+                            toko elektronik, toko sepatu, toko pakaian,
+                            minimarket, apotek, atau gudang lainnya.
+                        </p>
+                    </div>
+
+                    <div class="guide-card">
+                        <span>02</span>
+                        <h3>Isi Data Gudang</h3>
+                        <p>
+                            Masukkan nama gudang, lokasi, dan nama pengelola.
+                        </p>
+                    </div>
+
+                    <div class="guide-card">
+                        <span>03</span>
+                        <h3>Masukkan Stok</h3>
+                        <p>
+                            Masukkan nama barang, stok sekarang, dan satuannya.
+                        </p>
+                    </div>
+
+                    <div class="guide-card">
+                        <span>04</span>
+                        <h3>Isi Perubahan Stok</h3>
+                        <p>
+                            Masukkan jumlah barang yang diperkirakan terpakai
+                            atau terjual dan jumlah barang yang masuk.
+                        </p>
+                    </div>
+
+                    <div class="guide-card">
+                        <span>05</span>
+                        <h3>Tentukan Periode</h3>
+                        <p>
+                            Tentukan berapa periode yang ingin diprediksi.
+                        </p>
+                    </div>
+
+                    <div class="guide-card">
+                        <span>06</span>
+                        <h3>Lihat Hasil</h3>
+                        <p>
+                            Sistem menghitung stok secara berulang menggunakan
+                            relasi rekurensi.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="panel guide-formula">
+
+                    <p class="label">DASAR MATEMATIKA DISKRIT</p>
+                    <h2>Relasi Rekurensi Stok</h2>
+
+                    <div class="big-formula">
+                        Sₙ = Sₙ₋₁ − Pₙ + Mₙ
+                    </div>
+
+                    <p>
+                        Nilai stok pada suatu periode ditentukan dari nilai stok
+                        pada periode sebelumnya, dikurangi barang yang terpakai
+                        atau terjual, kemudian ditambah barang yang masuk.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <section id="page-data" class="app-page">
+
+                <div class="page-title">
+                    <div>
+                        <p class="label">DATA</p>
+                        <h1>Simpan dan Kelola Data</h1>
+                        <p>Backup data agar tidak hilang ketika berpindah perangkat.</p>
+                    </div>
+                </div>
+
+                <div class="data-grid">
+
+                    <div class="panel data-card">
+                        <span class="data-icon">📥</span>
+                        <h2>Export Data</h2>
+                        <p>
+                            Simpan data stok dan riwayat ke file JSON.
+                        </p>
+
+                        <button class="primary-btn" onclick="exportData()">
+                            Export Data
+                        </button>
+                    </div>
+
+                    <div class="panel data-card">
+                        <span class="data-icon">📤</span>
+                        <h2>Import Data</h2>
+                        <p>
+                            Masukkan kembali data yang sebelumnya sudah dibackup.
+                        </p>
+
+                        <input
+                            type="file"
+                            id="importFile"
+                            accept=".json"
+                            hidden
+                        >
+
+                        <button class="secondary-btn" onclick="document.getElementById('importFile').click()">
+                            Import Data
+                        </button>
+                    </div>
+
+                    <div class="panel data-card danger-card">
+                        <span class="data-icon">🗑️</span>
+                        <h2>Hapus Semua Data</h2>
+                        <p>
+                            Menghapus semua data aplikasi dari browser.
+                        </p>
+
+                        <button class="danger-btn" onclick="hapusSemuaData()">
+                            Hapus Semua Data
+                        </button>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
